@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <stdlib.h>
+int main()printf("%c  %c  %d \n", v1[i],v2[i],cant);
+{
+char v1[]="hola,comoestas";
+char v2[]="est";
+int i,j,cant,l,u1,u2;
+u1=strlen(v1);
+u2=strlen(v2);
+for (i=0;i<u1-u2;i++)
+{cant=0;
+  l=0;
+    for (j=i;j<(i+3);j++)
+
+        {if (v1[j]==v2[l])
+          cant++;
+        //printf("%c  %c  %d \n", v1[i],v2[i],cant);
+        l++;
+         }
+         if (cant==3){
+            printf("Esta en la posicion %d",i);
+            return 0;
+         }
+}
+printf("no esta");
+return 0;
+
+}

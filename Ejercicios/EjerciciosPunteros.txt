@@ -1,0 +1,364 @@
+ 
+ 
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+ 
+
+int main()
+
+{
+
+int *punt;
+
+int x=7;
+
+int y=5;
+
+punt=&x;
+
+*punt=4;
+
+printf("%d, %d",x,y); // ¿qué imprime este printf?
+
+return 0;
+
+}
+
+ 
+
+ 
+
+ 
+
+2-
+
+ 
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+ 
+
+int main()
+
+{
+
+int *punt;
+
+int x=7;
+
+int y=5;
+
+punt=&x;
+
+x=4;
+
+printf("%d, %d",*punt,y); // ¿qué imprime este printf?
+
+ 
+
+}
+
+ 
+
+ 
+
+3-
+
+ 
+
+ 
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+ 
+
+int main()
+
+{
+
+int *punt;
+
+int x=7;
+
+int y=5;
+
+punt=&x;
+
+x=4;
+
+punt=&y;
+
+printf("%d, %d",*punt,x); // ¿qué imprime este printf?
+
+ 
+
+}
+
+ 
+
+ 
+
+4-
+
+ 
+
+ 
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+ 
+
+int main()
+
+{
+
+int *punt;
+
+int x=7;
+
+int y=5;
+
+punt=&x;
+
+*punt=3;
+
+punt=&y;
+
+*punt=x;
+
+x=9;
+
+printf("%d, %d",*punt,x); // ¿qué imprime este printf?
+
+ 
+
+}
+
+ 
+
+5-
+
+ 
+
+ 
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+ 
+
+int main()
+
+{
+
+int *punta, *puntb;
+
+int x=7;
+
+int y=5;
+
+punta=&x;
+
+*punta=3;
+
+puntb=&y;
+
+*puntb=x;
+
+x=9;
+
+printf("%d, %d",*puntb,x); // ¿qué imprime este printf?
+
+ 
+
+}
+
+ 
+
+ 
+
+6-
+
+ 
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+ 
+
+int main()
+
+{
+
+int *punta, *puntb;
+
+int x=7;
+
+int y=5;
+
+punta=&x;
+
+*punta=3;
+
+puntb=&y;
+
+*puntb=x;
+
+x=9;
+
+printf("%d, %d",*puntb, *punta); // ¿qué imprime?
+
+ 
+
+}
+
+ 
+
+ 
+
+7-
+
+ 
+
+ 
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+ 
+
+int main()
+
+{
+
+int *punt,i;
+
+int x[5]={1,2,3,4,5};
+
+punt=x;
+
+*punt=9;
+
+for(i=0;i<5;i++)
+
+printf("%d,",x[i]); // ¿qué imprime?
+
+}
+
+ 
+
+8-
+
+ 
+
+ 
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+ 
+
+int main()
+
+{
+
+int *punt,i;
+
+int x[5]={1,2,3,4,5};
+
+punt=&x[0];
+
+*punt=9;
+
+punt[3]=7;
+
+for(i=0;i<5;i++)
+
+printf("%d,",x[i]); // ¿qué imprime?
+
+}
+
+ 
+
+9-
+
+ 
+
+ 
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+ 
+
+int main()
+
+{
+
+int *punt,i;
+
+int x[5]={1,2,3,4,5};
+
+punt=x;
+
+*x=11;
+
+*(punt+3)=9 ;
+
+for(i=0;i<5;i++)
+
+printf("%d,",x[i]); // ¿qué imprime?
+
+}
+
+ 
+
+10 –  
+
+#include <stdio.h>
+
+#include <stdlib.h>
+
+ 
+
+int main()
+
+{
+
+int *punt,i;
+
+int x[5]={1,2,3,4,5};
+
+punt=x;
+
+*(punt+2)=9;
+
+*(x+3)=7 ;
+
+punt[1]=11 ;
+
+for(i=0;i<5;i++)
+
+printf("%d,",*(punt+i)); // ¿qué imprime?
+
+}
+
+ 
+
+ 
+
+ 

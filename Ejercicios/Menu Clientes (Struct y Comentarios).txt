@@ -1,0 +1,509 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/// Definicion de las estructuras que se van a utilizar
+
+struct Fecha{
+		    int dia;
+		    int mes;
+		    int anio;
+};
+
+struct Cuota{
+        struct Fecha fechaCta;
+        float capitalCta;
+        float interesCta;
+};
+
+struct Cliente{
+    int idCliente;
+    char nombre[30];
+    char producto[30];
+    float capital;
+    float interes;
+    int cantCuotas;
+    struct Fecha fechaCompra;
+    struct Cuota cuotas[12];
+};
+
+/// Definición de variables globales
+
+struct Cliente clientes[30];
+int ultimo = 0;
+
+/// Definicion de procedimientos
+
+void Altas();
+void Bajas();
+void Modificaciones();
+void Consultas();
+void Modificar(int nro);
+
+void ImprimirFecha(struct Fecha fecha);
+void ImprimirCliente(int nroOrden);
+
+void CalcularCuotas(int nro);
+void ListaClientes();
+void ListaCuotas();
+void CuotasInteresSimple(int nroOrden);
+void CuotasInteresCompuesto(int nroOrden);
+void CuotasInteresDirecto(int nroOrden);
+
+/// Programa Principal
+int main()
+{
+    int opcion;
+    /// Si no se indica, no se sale del programa
+    while(opcion!=0){
+        opcion = 99;
+        /// Si se un numero que no sea valido, se sigue pidiendo el ingreso
+        while(opcion > 4 || opcion < 0){
+
+            /// Listamos las opciones a elegir
+            system("CLS");
+            printf("Menu de alumnos\n");
+            printf("-------------------\n");
+            printf("1 - Altas\n");
+            printf("2 - Bajas\n");
+            printf("3 - Modificaciones\n");
+            printf("4 - Consultas\n");
+            printf("0 - Salir del programa\n");
+            printf("Opcion seleccionada: ");
+
+            scanf("%d", &opcion);
+
+            switch (opcion){
+                case 0:
+                    printf("\nHasta Pronto!\n\n");
+                    break;
+                case 1:
+                    Altas();
+                    break;
+                case 2:
+                    Bajas();
+                    break;
+                case 3:
+                    Modificaciones();
+                    break;
+                case 4:
+                    Consultas();
+                    break;
+                default:
+                    printf("La opcion elegida no es valida. Debe volver a elegir! \n");
+            }
+            system("PAUSE");
+        }
+
+    }
+
+
+    return 0;
+}
+
+void Altas(){
+    system("CLS");
+    printf("Altas\n--------------------\n");
+
+    /// Pedimos que se ingresen por teclado los datos de nuevo cliente
+    printf("Numero Cliente: ");
+    scanf("%d", &clientes[ultimo].idCliente);
+    printf("Nombre: ");
+    scanf("%s", clientes[ultimo].nombre);
+    printf("Producto: ");
+    scanf("%s", clientes[ultimo].producto);
+    printf("Capital: ");
+    scanf("%f",&clientes[ultimo].capital);
+    printf("Interes: ");
+    scanf("%f",&clientes[ultimo].interes);
+    printf("Cantidad de Cuotas: ");
+    scanf("%d",&clientes[ultimo].cantCuotas);
+    printf("Fecha compra: \n");
+    scanf("%d",&clientes[ultimo].fechaCompra.dia);
+    printf("/");
+    scanf("%d",&clientes[ultimo].fechaCompra.mes);
+    printf("/");
+    scanf("%d",&clientes[ultimo].fechaCompra.anio);
+    printf("\n");
+
+    /// Llamamos un procedimiento que calcule las cuotas segun el tipo de interes
+    CalcularCuotas(ultimo);
+    ultimo++;
+};
+
+void Bajas(){
+    /// Usamos el while(1) para que siempre no salga del procedimiento hasta que lo indiquemos
+    while(1){
+        system("CLS");
+        printf("Bajas\n--------------------\n");
+
+        int nro = 99;
+        /// Si se un numero que no sea valido, se sigue pidiendo el ingreso
+        while(nro > ultimo || nro < 0){
+            printf("Ingrese el numero de orden a dar de baja (99- Volver al menu): ");
+            scanf("%d", &nro);
+
+            /// Si se ingresa un numero valido
+            if(nro != 99){
+                int i,j;
+
+                /// Pisamos todos los datos del cliente que se quiere dar de baja con los datos del siguiente
+                for(i=nro;i<ultimo;i++){
+
+                    clientes[i].idCliente = clientes[i+1].idCliente;
+                    strcpy(clientes[i].producto, clientes[i+1].nombre);
+                    strcpy(clientes[i].producto, clientes[i+1].producto);
+                    clientes[i].capital = clientes[i+1].capital;
+                    clientes[i].interes = clientes[i+1].interes;
+                    clientes[i].cantCuotas = clientes[i+1].cantCuotas;
+                    clientes[i].fechaCompra.dia = clientes[i+1].fechaCompra.dia;
+                    clientes[i].fechaCompra.mes = clientes[i+1].fechaCompra.mes;
+                    clientes[i].fechaCompra.anio = clientes[i+1].fechaCompra.anio;
+
+                    /// En el caso de las cuotas, como se trata de un vector, tenemos que recorrer todas las posiciones para copiarlo
+                    for(j=0 ; j <12 ; j++){
+                        clientes[i].cuotas[j].fechaCta.dia = clientes[i+1].cuotas[j].fechaCta.dia;
+                        clientes[i].cuotas[j].fechaCta.mes = clientes[i+1].cuotas[j].fechaCta.mes;
+                        clientes[i].cuotas[j].fechaCta.anio = clientes[i+1].cuotas[j].fechaCta.anio;
+                        clientes[i].cuotas[j].capitalCta = clientes[i+1].cuotas[j].capitalCta;
+                        clientes[i].cuotas[j].interesCta = clientes[i+1].cuotas[j].interesCta;
+                    }
+                }
+
+                /// El ultimo cliente hay que "vaciarlo"
+                clientes[i].idCliente = 0;
+                strcpy(clientes[i].producto, "");
+                clientes[i].capital = 0;
+                clientes[i].cantCuotas = 0;
+                clientes[i].interes = 0;
+                clientes[i].fechaCompra.dia = 0;
+                clientes[i].fechaCompra.mes = 0;
+                clientes[i].fechaCompra.anio = 0;
+
+                /// Para vaciar el vector de cuotas tambien lo recorremos
+                for(j=0 ; j <12 ; j++){
+                        clientes[i].cuotas[j].fechaCta.dia = 0;
+                        clientes[i].cuotas[j].fechaCta.mes = 0;
+                        clientes[i].cuotas[j].fechaCta.anio = 0;
+                        clientes[i].cuotas[j].capitalCta = 0;
+                        clientes[i].cuotas[j].interesCta = 0;
+                }
+
+                ultimo--;
+
+            }else{
+                /// Si la opcion elegida es 99, salimos del procedimiento
+                return;
+            }
+        }
+    }
+}
+
+void Modificaciones(){
+    /// Usamos el while(1) para que siempre no salga del procedimiento hasta que lo indiquemos
+    while(1){
+        int nro = 99;
+        system("CLS");
+
+        /// Si se un numero que no sea valido, se sigue pidiendo el ingreso
+        while(nro > ultimo || nro < 0){
+            printf("Ingrese el numero de orden a modificar (99- Volver al menu): ");
+            scanf("%d", &nro);
+
+            if(nro != 99){
+                /// Si se ingresa un numero valido, llamamos un procedimiento para realizar la modificacion deseada
+                Modificar(nro);
+            }else{
+                /// Si la opcion elegida es 99, salimos del procedimiento
+                return;
+            }
+        }
+
+    }
+}
+
+void Consultas(){
+    system("CLS");
+    int opcion;
+    /// Listamos los tipos de informes a consultar
+    printf("Que informe desea ver?\n");
+    printf("--------------------------\n");
+    printf("1 - Listado de Clientes\n");
+    printf("2 - Cuotas por Cliente\n");
+    printf("0 - Volver a la pantalla anterior\n");
+
+    opcion = 99;
+    /// Si se un numero que no sea valido, se sigue pidiendo el ingreso
+    while(opcion > 6 || opcion < 0){
+        printf("Ingrese el numero de opcion: ");
+        scanf("%d", &opcion);
+
+        switch (opcion){
+                case 0:
+                    return;
+                    break;
+                case 1:
+                    ListaClientes();
+                    break;
+                case 2:
+                    ListaCuotas();
+                    break;
+                default:
+                    printf("La opcion elegida no es valida. Debe volver a elegir! \n");
+            }
+            system("PAUSE");
+    }
+}
+
+void Modificar(int nro){
+    int opcion;
+
+    system("CLS");
+
+    /// Se listan los datos que se pueden modificar del cliente
+    printf("Que desea modificar?\n");
+    printf("-------------------\n");
+    printf("1 - Nro. de Cliente (%d)\n", clientes[nro].idCliente);
+    printf("2 - Nombre (%s)\n", clientes[nro].nombre);
+    printf("3 - Producto (%s)\n", clientes[nro].producto);
+    printf("4 - Capital (%f)\n", clientes[nro].capital);
+    printf("5 - Interes (%f)\n", clientes[nro].interes);
+    printf("6 - Cant. Cuotas (%d)\n", clientes[nro].cantCuotas);
+    printf("7 - Fecha Compra (%d/%d/%d)\n", clientes[nro].fechaCompra.dia, clientes[nro].fechaCompra.mes, clientes[nro].fechaCompra.anio);
+    printf("8 - Cuotas \n");
+    printf("0 - Volver a la pantalla anterior\n");
+
+    opcion = 99;
+    /// Si se un numero que no sea valido, se sigue pidiendo el ingreso
+    while(opcion > 6 || opcion < 0){
+        printf("Ingrese la opcion elegida: ");
+        scanf("%d", &opcion);
+
+        /// Segun la opcion elegida, se pide el ingreso del nuevo dato y se modifica el que corresponda.
+        switch (opcion){
+                case 0:
+                    return;
+                    break;
+                case 1:
+                    printf("Ingrese el Nro. de Cliente nuevo: ");
+                    scanf("%d", &clientes[nro].idCliente);
+                    break;
+                case 2:
+                    printf("Ingrese el Nombre nuevo: ");
+                    scanf("%s", clientes[nro].nombre);
+                    break;
+                case 3:
+                    printf("Ingrese el Producto nuevo: ");
+                    scanf("%s", clientes[nro].producto);
+                    break;
+                case 4:
+                    printf("Ingrese el Capital nuevo: ");
+                    scanf("%f",&clientes[nro].capital);
+                    break;
+                case 5:
+                    printf("Ingrese el Interes nuevo: ");
+                    scanf("%f",&clientes[nro].interes);
+                    break;
+                case 6:
+                    printf("Ingrese la nueva Cantidad de Cuotas: ");
+                    scanf("%d",&clientes[nro].cantCuotas);
+                    CalcularCuotas(nro);
+                    break;
+                case 7:
+                    printf("Ingrese la Fecha Compra nueva:"); // la primer cuota es a 30 dias
+                    scanf("%d",&clientes[nro].fechaCompra.dia);
+                    printf("/");
+                    scanf("%d",&clientes[nro].fechaCompra.mes);
+                    printf("/");
+                    scanf("%d",&clientes[nro].fechaCompra.anio);
+                    break;
+                case 8:
+                    CalcularCuotas(nro);
+                    break;
+                default:
+                    printf("La opcion elegida no es valida. Debe volver a elegir! \n");
+            }
+            system("PAUSE");
+    }
+}
+
+/// Armamos un procedimiento auxiliar para imprimir mas facilmente los STRUCT de tipo FECHA
+void ImprimirFecha(struct Fecha fecha){
+    printf("%d / %d / %d", fecha.dia, fecha.mes, fecha.anio);
+}
+
+void CalcularCuotas(int nroOrden){
+    int opcion;
+
+    opcion = 99;
+
+    system("CLS");
+
+    /// Se listan los tipos de interes con los que se pueden
+    printf("Que tipo de interes se debe utilizar?\n");
+    printf("-------------------------------------\n");
+    printf("1 - Interes Simple\n");
+    printf("2 - Interes Compuesto\n");
+    printf("3 - Interes Directo\n");
+    printf("0 - Volver a la pantalla anterior\n");
+
+    /// Si se un numero que no sea valido, se sigue pidiendo el ingreso
+    while(opcion > 6 || opcion < 0){
+        printf("Ingrese la opcion elegida: ");
+        scanf("%d", &opcion);
+
+        /// Segun la opcion elegida se llama un procedimiento que genera las cuotas con el tipo de interes correcto
+        switch (opcion){
+                case 0:
+                    return;
+                    break;
+                case 1:
+                    CuotasInteresSimple(nroOrden);
+                    break;
+                case 2:
+                    CuotasInteresCompuesto(nroOrden);
+                    break;
+                case 3:
+                    CuotasInteresDirecto(nroOrden);
+                    break;
+                default:
+                    printf("La opcion elegida no es valida. Debe volver a elegir! \n");
+            }
+            //system("PAUSE");
+    }
+}
+
+/// Procedimiento auxiliar para imprimir mas facilmente un Cliente
+void ImprimirCliente(int nroOrden){
+    printf("Numero Cliente: %d ", clientes[nroOrden].idCliente);
+    printf("Producto: %s ", clientes[nroOrden].producto);
+    printf("Capital: %f ", clientes[nroOrden].capital);
+    printf("Intereses: %f ", clientes[nroOrden].interes);
+    printf("Cuotas: %d ", clientes[nroOrden].cantCuotas);
+    printf("Fecha inicial: ");
+    ImprimirFecha(clientes[nroOrden].fechaCompra);
+}
+
+/// Procedimiento para imprimir todos los clientes
+void ListaClientes(){
+    system("CLS");
+
+    /// Si no se dio de alta ningun cliente, se avisa
+    (ultimo == 0)? printf("\nAun no se cargaron datos.\n\n"):(printf("Consultas\n--------------------\n"));
+
+    int i ;
+    printf("\n");
+
+    /// Si hay clientes, se imprimen todos
+    for(i=0;i<ultimo;i++){
+        ImprimirCliente(i);
+    }
+    printf("\n");
+}
+
+/// Procedimiento para imprimir los datos de un cliente, incluyendo las cuotas
+void ListaCuotas(){
+    system("CLS");
+
+     /// Si no se dio de alta ningun cliente, se avisa
+    if (ultimo == 0){
+        printf("\nAun no se cargaron datos.\n\n");
+    } else {
+        int i;
+        int nro = 99;
+
+        /// Si se un numero que no sea valido, se sigue pidiendo el ingreso
+        while(nro > ultimo || nro < 0){
+            printf("Ingrese el numero de orden del cliente (99- Volver al menu): ");
+            scanf("%d", &nro);
+
+            /// Si es un numero valido, se hace la impresi{on
+            if(nro!= 99){
+
+                system("CLS");
+                /// Imprimo datos simple del cliente seleccionado.
+                ImprimirCliente(nro);
+                printf("\n");
+                /// Imprimo las cuotas del cliente seleccionado.
+                for(i=0;i<clientes[nro].cantCuotas;i++){
+                    ImprimirFecha(clientes[nro].cuotas[i].fechaCta);
+                    printf("\t %.2f  \t", clientes[nro].cuotas[i].capitalCta);
+                    printf("%.2f \n",clientes[nro].cuotas[i].interesCta);
+                }
+            } else{
+                return;
+            }
+        }
+    }
+}
+
+void CuotasInteresSimple(int nroOrden){
+    int i;
+    struct Fecha fechaAux = clientes[nroOrden].fechaCompra;
+
+    float capitalCta, interesCta;
+
+    capitalCta = clientes[nroOrden].capital / clientes[nroOrden].cantCuotas;
+    interesCta = capitalCta * (clientes[nroOrden].interes/100);
+
+    for(i = 0; i < clientes[nroOrden].cantCuotas; i++){
+        fechaAux.mes++;
+        if (fechaAux.mes==13) {
+            fechaAux.mes=1;
+            fechaAux.anio++;
+        }
+
+        clientes[nroOrden].cuotas[i].fechaCta = fechaAux;
+        clientes[nroOrden].cuotas[i].capitalCta = capitalCta;
+        clientes[nroOrden].cuotas[i].interesCta = interesCta;
+    }
+
+}
+
+
+void CuotasInteresCompuesto( int nroOrden){
+    int i;
+
+    struct Fecha fechaAux = clientes[nroOrden].fechaCompra;
+
+    clientes[nroOrden].cuotas[0].capitalCta = clientes[nroOrden].capital / clientes[nroOrden].cantCuotas;
+    clientes[nroOrden].cuotas[0].interesCta = clientes[nroOrden].cuotas[0].capitalCta * (clientes[nroOrden].interes/100);
+
+    for(i = 1; i < clientes[nroOrden].cantCuotas; i++){
+        fechaAux.mes++;
+        if (fechaAux.mes==13) {
+            fechaAux.mes=1;
+            fechaAux.anio++;
+        }
+
+        clientes[nroOrden].cuotas[i].fechaCta = fechaAux;
+        clientes[nroOrden].cuotas[i].capitalCta = clientes[nroOrden].cuotas[i-1].capitalCta + clientes[nroOrden].cuotas[i-1].interesCta;
+        clientes[nroOrden].cuotas[i].interesCta = clientes[nroOrden].cuotas[i].capitalCta * (clientes[nroOrden].interes/100);
+
+    }
+}
+
+
+void CuotasInteresDirecto( int nroOrden){
+
+    int i;
+
+    struct Fecha fechaAux = clientes[nroOrden].fechaCompra;
+
+    float capitalCta, interesCta;
+
+    capitalCta = clientes[nroOrden].capital / clientes[nroOrden].cantCuotas;
+    interesCta = clientes[nroOrden].capital * (clientes[nroOrden].interes/100);
+
+    for(i = 0; i < clientes[nroOrden].cantCuotas; i++){
+        fechaAux.mes++;
+        if (fechaAux.mes==13) {
+            fechaAux.mes=1;
+            fechaAux.anio++;
+        }
+
+        clientes[nroOrden].cuotas[i].fechaCta = fechaAux;
+        clientes[nroOrden].cuotas[i].capitalCta = capitalCta;
+        clientes[nroOrden].cuotas[i].interesCta = interesCta;
+    }
+}
