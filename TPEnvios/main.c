@@ -14,6 +14,7 @@ char Seguir[2];float Total_1=0,Totales[10],Cantidad_Gramos[10];char Tiempo[TAM];
 //Linea de separacion
 char Linea[TAM]="------------------------------------------------------------------------------";
 //Estructura chocolcates
+
 struct{
     char Sabor_1[TAM]="Chocolate Negro",Sabor_2[TAM]="Chocolate Blanco";
     char Sabor_3[TAM]="Chocolate con Almendras",Sabor_4[TAM]="Chocolate de Banana";
