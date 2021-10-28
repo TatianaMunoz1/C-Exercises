@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1542542474 source:c:\users\tati\documents\unla\primer año\programacion\c-exercises\tps\p\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+

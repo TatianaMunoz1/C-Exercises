@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+
+FILE *fd;
+int 
+    char direccion[] = "C:\\Users\\tati\\Documents\\Apareo de Archivos\\Tutoriales\\hola.txt";
+main()
+{
+    fd= fopen(direccion,"r");
+
+    if(fd == NULL){
+
+    printf("El archivo no existe");
+    }
+    else{
+        printf("El archivo existe");
+    }
+    return 0;
+}
+
+//Archivos en el main

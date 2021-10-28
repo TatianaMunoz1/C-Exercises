@@ -1,0 +1,74 @@
+MPLINK 4.31, Linker
+Linker Map File - Created Fri Nov 23 02:50:11 2018
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000002
+                   .org_2       code   0x000004    program   0x000162
+.config_2007_1(NOCOMMENTS).O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000000      
+                            0x000004    0x0000b4      
+                            0x002007    0x002007      
+            179 out of 2183 program addresses used, program memory utilization is 8%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                  BOTONES   0x000044    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                  CAMBIAR   0x000059    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+             CAMBIAR_A_N2   0x00005c    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+      CAMBIAR_A_RESULTADO   0x000068    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                    CONFI   0x00002c    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                DEMORA_AR   0x000050    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                  FIN_T0I   0x000026    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                   INICIO   0x000000    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                  LOOP_AR   0x000052    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                LOOP_AR_2   0x000054    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+               MOSTRAR_D2   0x000015    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+               MOSTRAR_D3   0x00001b    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+               MOSTRAR_D4   0x000021    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                 NEGATIVO   0x000081    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                   RESTAR   0x000092    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                 SALTEO_R   0x0000a1    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                 SALTEO_S   0x000091    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                    SUMAR   0x000084    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+              TAB_DISPLAY   0x0000a2    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+          TAB_DISPLAY_NEG   0x0000b3    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                   INICIO   0x000000    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+               MOSTRAR_D2   0x000015    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+               MOSTRAR_D3   0x00001b    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+               MOSTRAR_D4   0x000021    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                  FIN_T0I   0x000026    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                    CONFI   0x00002c    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                  BOTONES   0x000044    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                DEMORA_AR   0x000050    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                  LOOP_AR   0x000052    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                LOOP_AR_2   0x000054    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                  CAMBIAR   0x000059    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+             CAMBIAR_A_N2   0x00005c    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+      CAMBIAR_A_RESULTADO   0x000068    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                 NEGATIVO   0x000081    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                    SUMAR   0x000084    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                 SALTEO_S   0x000091    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                   RESTAR   0x000092    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+                 SALTEO_R   0x0000a1    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+              TAB_DISPLAY   0x0000a2    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+          TAB_DISPLAY_NEG   0x0000b3    program     static F:\Tp de Arquitectura\1\1(NoComments).asm
+
+

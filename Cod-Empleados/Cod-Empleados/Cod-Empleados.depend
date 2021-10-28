@@ -1,0 +1,36 @@
+# depslib dependency file v1.0
+1542633795 source:f:\testcodigo\testcodigonico\empleado.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"empleado.h"
+
+1542633795 f:\testcodigo\testcodigonico\empleado.h
+
+1542633795 source:f:\testcodigo\testcodigonico\evento.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"evento.h"
+	"empleado.h"
+
+1542633794 f:\testcodigo\testcodigonico\evento.h
+	"empleado.h"
+
+1542633795 source:f:\testcodigo\testcodigonico\main.c
+	<stdio.h>
+	<stdlib.h>
+	"evento.h"
+	"empleado.h"
+
+1542633795 source:c:\users\tati\documents\unla\primer año\programacion\c-exercises\testcodigo\testcodigonico\main.c
+	<stdio.h>
+	<stdlib.h>
+	"evento.h"
+	"empleado.h"
+
+1542633794 c:\users\tati\documents\unla\primer año\programacion\c-exercises\testcodigo\testcodigonico\evento.h
+	"empleado.h"
+
+1542633795 c:\users\tati\documents\unla\primer año\programacion\c-exercises\testcodigo\testcodigonico\empleado.h
+

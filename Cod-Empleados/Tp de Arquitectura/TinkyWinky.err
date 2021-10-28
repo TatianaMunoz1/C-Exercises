@@ -1,0 +1,17 @@
+Message[302] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 119 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 121 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 122 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 123 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 124 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 125 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 126 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[305] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 181 : Using default destination of 1 (file).
+Message[305] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 183 : Using default destination of 1 (file).
+Message[305] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 185 : Using default destination of 1 (file).
+Message[305] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 187 : Using default destination of 1 (file).
+Warning[202] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 218 : Argument out of range.  Least significant bits used.
+Warning[202] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 222 : Argument out of range.  Least significant bits used.
+Warning[202] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 225 : Argument out of range.  Least significant bits used.
+Warning[202] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 228 : Argument out of range.  Least significant bits used.
+Warning[202] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 307 : Argument out of range.  Least significant bits used.
+Warning[205] C:\USERS\TATI\DESKTOP\TP DE ARQUITECTURA\EJEMPLOS\TINKYWINKY.ASM 310 : Found directive in column 1. (END)

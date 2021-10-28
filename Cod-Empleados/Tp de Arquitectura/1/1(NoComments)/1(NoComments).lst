@@ -1,0 +1,692 @@
+MPASM  5.31                 1(NOCOMMENTS).ASM   11-23-2018  2:50:09         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 #INCLUDE<P16F628A.INC>
+                      00001         LIST
+                      00002 ; P16F628A.INC  Standard Header File, Version 1.10    Microchip Technology, Inc.
+                      00265         LIST
+                      00266 
+2007   3F10           00002                 __CONFIG 3F10
+                      00003 
+                      00004 ;DECLARACION DE ESPACIOS DE MEMORIA A USAR              
+                      00005                 CBLOCK  0X20
+  00000020            00006                 D1
+  00000021            00007                 D2
+  00000022            00008                 D3
+  00000023            00009                 D4
+  00000024            00010                 AUX_W
+  00000025            00011                 AUX_STATUS
+  00000026            00012         D1_N1
+  00000027            00013         D2_N1
+  00000028            00014         D3_N1
+  00000029            00015         AUX_D4
+  0000002A            00016                 D3_N2
+  0000002B            00017                 D1_N2
+  0000002C            00018                 D1_N3
+  0000002D            00019                 D2_N2
+  0000002E            00020         D3_N3
+  0000002F            00021         AUX_D8
+  00000030            00022                 AUXILIAR9
+  00000031            00023                 AUX_REST1
+  00000032            00024         AUX_NUM1
+  00000033            00025         AUX_NUM2
+  00000034            00026                 CONT_AR 
+  00000035            00027                 CONT_AR_2
+  00000036            00028                 FLAG_M
+                      00029                 ENDC
+                      00030                 
+                      00031 ;DECLARACION DE CONSTATNES
+                      00032 #DEFINE BTN_G1  PORTA,6
+                      00033 #DEFINE BTN_G2  PORTA,7
+                      00034 #DEFINE BTN_R   PORTA,4
+                      00035 #DEFINE BTN_M   PORTB,0
+                      00036 
+                      00037 #DEFINE PIN_D1  3
+                      00038 #DEFINE PIN_D2  2
+                      00039 #DEFINE PIN_D3  1
+                      00040 #DEFINE PIN_D4  0
+                      00041 
+                      00042 #DEFINE CTRL_DISPLAY    PORTA
+                      00043 #DEFINE APAGAR_DISPLAYS CLRF    PORTA
+                      00044 
+                      00045 ;DECLARACION DE MACROS
+                      00046 
+                      00047 MOSTRAR MACRO   DIGITO,PIN
+                      00048                 APAGAR_DISPLAYS
+                      00049                 MOVF    DIGITO,W
+MPASM  5.31                 1(NOCOMMENTS).ASM   11-23-2018  2:50:09         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00050                 CALL    TAB_DISPLAY
+                      00051                 MOVWF   PORTB
+                      00052                 BSF             CTRL_DISPLAY,PIN
+                      00053                 ENDM
+                      00054 
+                      00055 ;DECLARACION DE MEMORIA EEPROM
+                      00056 
+  00000000            00057 deciunoeeprom         equ  0x00
+  00000001            00058 uniunoeeprom          equ  0x01
+  00000002            00059 decidoseeprom         equ  0x02
+  00000003            00060 unidoseeprom          equ  0x03
+  00000003            00061 unidoseeprom          equ  0x03                                         
+                      00062 
+                      00063 
+                      00064 
+                      00065 
+                      00066 
+                      00067 ;INICIO DEL PROGRAMA            
+0000                  00068 INICIO          
+0000                  00069                 ORG             0X00
+0000   282C           00070                 GOTO    CONFI
+0004                  00071                 ORG             0X04            
+                      00072 
+                      00073 ;RUTINA DE INTERRUPCION
+                      00074 ;DESBORDA EL TIMER CADA 15ms
+                      00075 ;MUESTRA TODOS LOS DIGITOS DE ACUERDO A LAS VARIABLES D1:4
+                      00076 
+                      00077 ;GUARDA STATUS Y W EN VARIABLES AUXILIARES
+0004   110B           00078                 BCF             INTCON,T0IF
+0005   138B           00079                 BCF             INTCON,GIE              
+0006   00A4           00080                 MOVWF   AUX_W
+0007   3003           00081                 MOVLW   STATUS
+0008   00A5           00082                 MOVWF   AUX_STATUS
+                      00083 
+                      00084 ;MULTIPLEXADO DE DISPLAYS
+0009   1985           00085                 BTFSC   CTRL_DISPLAY,PIN_D1
+000A   2815           00086                 GOTO    MOSTRAR_D2                      
+000B   1905           00087                 BTFSC   CTRL_DISPLAY,PIN_D2
+000C   281B           00088                 GOTO    MOSTRAR_D3
+000D   1885           00089                 BTFSC   CTRL_DISPLAY,PIN_D3
+000E   2821           00090                 GOTO    MOSTRAR_D4
+                      00091                 MOSTRAR D1,PIN_D1
+000F   0185               M                 APAGAR_DISPLAYS
+0010   0820               M                 MOVF    D1,W
+0011   20A2               M                 CALL    TAB_DISPLAY
+0012   0086               M                 MOVWF   PORTB
+0013   1585               M                 BSF             CTRL_DISPLAY,3
+0014   2826           00092                 GOTO    FIN_T0I
+                      00093 
+0015                  00094 MOSTRAR_D2
+                      00095                 MOSTRAR D2,PIN_D2
+0015   0185               M                 APAGAR_DISPLAYS
+0016   0821               M                 MOVF    D2,W
+MPASM  5.31                 1(NOCOMMENTS).ASM   11-23-2018  2:50:09         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0017   20A2               M                 CALL    TAB_DISPLAY
+0018   0086               M                 MOVWF   PORTB
+0019   1505               M                 BSF             CTRL_DISPLAY,2
+001A   2826           00096                 GOTO    FIN_T0I
+                      00097 
+001B                  00098 MOSTRAR_D3
+                      00099                 MOSTRAR D3,PIN_D3
+001B   0185               M                 APAGAR_DISPLAYS
+001C   0822               M                 MOVF    D3,W
+001D   20A2               M                 CALL    TAB_DISPLAY
+001E   0086               M                 MOVWF   PORTB
+001F   1485               M                 BSF             CTRL_DISPLAY,1
+0020   2826           00100                 GOTO    FIN_T0I
+                      00101 
+0021                  00102 MOSTRAR_D4
+                      00103                 MOSTRAR D4,PIN_D4
+0021   0185               M                 APAGAR_DISPLAYS
+0022   0823               M                 MOVF    D4,W
+0023   20A2               M                 CALL    TAB_DISPLAY
+0024   0086               M                 MOVWF   PORTB
+0025   1405               M                 BSF             CTRL_DISPLAY,0
+                      00104                 
+0026                  00105 FIN_T0I
+                      00106 ;REINICIA TIMER Y RECUPERA STATUS Y W
+0026   30C6           00107                 MOVLW   .198
+0027   0081           00108                 MOVWF   TMR0
+0028   0825           00109                 MOVF    AUX_STATUS,W
+0029   0083           00110                 MOVWF   STATUS
+002A   0824           00111                 MOVF    AUX_W,W
+002B   0009           00112                 RETFIE
+                      00113 
+                      00114 ;CONFIGURACION-------------------------------
+                      00115                 
+002C                  00116 CONFI
+002C   3007           00117                 MOVLW   0X07
+002D   009F           00118                 MOVWF   CMCON           ;CMCON SE TIENE QUE ESTABLECER EN 7 PARA USAR TODO EL PORTA
+002E   30C6           00119                 MOVLW   .198
+002F   0081           00120                 MOVWF   TMR0
+0030   1683           00121                 BSF             STATUS,RP0
+0031   3001           00122                 MOVLW   b'00000001'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0032   0086           00123                 MOVWF   TRISB   
+0033   30F0           00124                 MOVLW   b'11110000'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0034   0085           00125                 MOVWF   TRISA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0035   1281           00126                 BCF             OPTION_REG,T0CS
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0036   1181           00127                 BCF             OPTION_REG,PSA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0037   1401           00128                 BSF             OPTION_REG,PS0
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0038   1481           00129                 BSF             OPTION_REG,PS1
+MPASM  5.31                 1(NOCOMMENTS).ASM   11-23-2018  2:50:09         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0039   1501           00130                 BSF             OPTION_REG,PS2
+003A   178B           00131                 BSF             INTCON,GIE
+003B   168B           00132                 BSF             INTCON,T0IE
+003C   1283           00133                 BCF             STATUS,RP0
+                      00134 
+                      00135 ;_________________________ -------------------______________________________
+                      00136 ;________________________| RUTINA PRINCIPAL |_____________________________
+                      00137 ;________________________| RUTINA PRINCIPAL | ______________________________
+                      00138 ;________________________-------------------- ______________________________
+                      00139 ;INCREMENTA DE 0 A (F) CADA DIGITO DEPENDIENDO QUE BOTON SE TOCA. 
+                      00140 
+003D   0185           00141                 CLRF    PORTA
+003E   0186           00142                 CLRF    PORTB
+003F   01A0           00143                 CLRF    D1
+0040   01A1           00144                 CLRF    D2
+0041   01A2           00145                 CLRF    D3      
+0042   01A3           00146                 CLRF    D4
+0043   01B6           00147                 CLRF    FLAG_M
+0044                  00148 BOTONES
+                      00149 
+0044   1B05           00150                 BTFSC   BTN_G1
+0045   2050           00151                 CALL    DEMORA_AR
+0046   1B05           00152                 BTFSC   BTN_G1
+0047   2084           00153                 CALL    SUMAR
+                      00154 
+0048   1B85           00155                 BTFSC   BTN_G2
+0049   2050           00156                 CALL    DEMORA_AR
+004A   1B85           00157                 BTFSC   BTN_G2
+004B   2092           00158                 CALL    RESTAR
+                      00159         
+004C   1A05           00160                 BTFSC   BTN_R
+004D   2050           00161                 CALL    DEMORA_AR
+004E   1A05           00162                 BTFSC   BTN_R
+004F   2000           00163                 CALL    INICIO
+                      00164 
+                      00165                 ;BTFSC BTN_M
+                      00166                 ;CALL DEMORA_AR
+                      00167                 ;BTFSC BTN_M
+                      00168                 ;GOTO CAMBIAR ;VER SI CONVIENE MAS USAR GOTO
+                      00169 
+                      00170                 ;GOTO   BOTONES
+                      00171 
+                      00172 ;DEMORA-------------------------------------------------------------------------------------------------
+                            ------------------------------------------------------------------------
+0050                  00173 DEMORA_AR
+0050   30FF           00174                 MOVLW   .255
+0051   00B4           00175                 MOVWF   CONT_AR
+0052                  00176 LOOP_AR
+0052   30FF           00177                 MOVLW   .255
+0053   00B5           00178                 MOVWF   CONT_AR_2
+0054                  00179 LOOP_AR_2
+0054   0BB5           00180                 DECFSZ  CONT_AR_2,1
+MPASM  5.31                 1(NOCOMMENTS).ASM   11-23-2018  2:50:09         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0055   2854           00181                 GOTO    LOOP_AR_2
+0056   0BB4           00182                 DECFSZ  CONT_AR,1
+0057   2852           00183                 GOTO    LOOP_AR
+0058   0008           00184                 RETURN
+                      00185         ;_______________________________________________________________________________________________
+                            _____________________________________________
+                      00186         ;_____________________________________________________CAMBIAR NUMERO____________________________
+                            _____________________________________________
+                      00187     ;___________________________________________________________________________________________________
+                            _________________________________________
+0059                  00188 CAMBIAR
+0059   1C36           00189                 BTFSS   FLAG_M, 0
+005A   285C           00190                 GOTO    CAMBIAR_A_N2
+005B   2868           00191                 GOTO    CAMBIAR_A_RESULTADO
+                      00192                 
+Warning[207]: Found label after column 1. (CAMBIAR_A_N2)
+005C                  00193                 CAMBIAR_A_N2            
+005C   0AB6           00194                                 INCF    FLAG_M,F        
+Message[305]: Using default destination of 1 (file).
+005D   08A0           00195                                 MOVF D1
+005E   00A6           00196                                 MOVWF D1_N1
+Message[305]: Using default destination of 1 (file).
+005F   08A1           00197                                 MOVF D2
+0060   00AB           00198                         MOVWF D1_N2
+Message[305]: Using default destination of 1 (file).
+0061   08A2           00199                                 MOVF  D3
+0062   00AC           00200                                 MOVWF D1_N3
+                      00201         
+0063   01A0           00202                                 CLRF D1
+0064   01A1           00203                                 CLRF D2 
+0065   01A2           00204                                 CLRF D3
+0066   01A3           00205                                 CLRF D4
+0067   0008           00206                                 RETURN
+                      00207 
+Warning[207]: Found label after column 1. (CAMBIAR_A_RESULTADO)
+0068                  00208                 CAMBIAR_A_RESULTADO
+                      00209 
+0068   1B05           00210                                 BTFSC   BTN_G1
+0069   2050           00211                                 CALL    DEMORA_AR
+006A   1B05           00212                                 BTFSC   BTN_G1
+006B   2084           00213                                 CALL    SUMAR
+                      00214 
+006C   1B85           00215                                 BTFSC   BTN_G2
+006D   2050           00216                                 CALL    DEMORA_AR
+006E   1B85           00217                                 BTFSC   BTN_G2
+006F   2092           00218                                 CALL    RESTAR
+                      00219                 
+                      00220 
+0070   1806           00221                                 BTFSC BTN_M
+0071   2050           00222                                 CALL DEMORA_AR
+0072   1806           00223                                 BTFSC BTN_M
+0073   2059           00224                                 CALL CAMBIAR
+                      00225                                 
+MPASM  5.31                 1(NOCOMMENTS).ASM   11-23-2018  2:50:09         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00226 
+Warning[202]: Argument out of range.  Least significant bits used.
+0074   0220           00227                                 SUBWF D1,D1_N1
+0075   1C03           00228                                 BTFSS STATUS,C
+0076   00A8           00229                                 MOVWF D3_N1
+0077   20B3           00230                                 CALL  TAB_DISPLAY_NEG
+Warning[202]: Argument out of range.  Least significant bits used.
+0078   02A1           00231                                 SUBWF D2,D1_N2
+0079   1C03           00232                                 BTFSS STATUS,C
+007A   00AA           00233                                 MOVWF D3_N2
+007B   20B3           00234                                 CALL TAB_DISPLAY_NEG
+Warning[202]: Argument out of range.  Least significant bits used.
+007C   0222           00235                                 SUBWF D3,D1_N3
+007D   1C03           00236                                 BTFSS STATUS,C
+007E   00AE           00237                                 MOVWF D3_N3
+007F   20B3           00238                         CALL TAB_DISPLAY_NEG
+0080   0008           00239                                 RETURN
+                      00240 
+                      00241 
+                      00242 
+0081                  00243 NEGATIVO
+0081   00AE           00244                 MOVWF D3_N3
+                      00245                 
+0082   28B3           00246                 GOTO TAB_DISPLAY_NEG
+0083   0008           00247                 RETURN
+                      00248 
+                      00249 ;___________________| SUBRUTINAS A MODIFICAR| __________________________________________________________
+                            _________________________________________________________
+                      00250 ;___________________|      SUBRUTINAS       | ___________________________________
+                      00251 ;___________________-------------------------____________________________________
+0084                  00252 SUMAR
+0084   0AA2           00253                 INCF    D3,1            ;Incrementa el D3 en 1
+0085   0822           00254                 MOVF    D3,W            ;Copia el valor de D3 a W
+0086   3A10           00255                 XORLW   .16                             ;XOR con 16. inncrementa hasta 16
+0087   1D03           00256                 BTFSS   STATUS,Z                ;Si llega a 16, salta
+0088   2891           00257                 GOTO    SALTEO_S                ;RUTINA
+0089   0AA3           00258                 INCF    D4,1                    ; Incrementa D4 a 1
+008A   0823           00259                 MOVF    D4,W                    ;Copia D4 en w
+008B   01A2           00260                 CLRF    D3                              ;Borra D3
+008C   3A10           00261                 XORLW   .16                             ;XOR con 16
+008D   1D03           00262                 BTFSS   STATUS,Z                ;Si llega a 16, D4, salta la bandera(Status,Z) en 1 (Com
+                            para 16 de D3 con el xor)
+008E   2891           00263                 GOTO    SALTEO_S                ;Rutina
+008F   0AA1           00264                 INCF    D2,1                    ;Incrementa D2 a 1
+0090   01A3           00265                 CLRF    D4                              ;borra D4
+0091                  00266 SALTEO_S
+0091   0008           00267                 RETURN
+                      00268 
+0092                  00269 RESTAR                                                  
+0092   03A2           00270                 DECF    D3,1
+0093   0822           00271                 MOVF    D3,W
+0094   3A00           00272                 XORLW   .0      
+0095   1D03           00273                 BTFSS   STATUS,Z                
+MPASM  5.31                 1(NOCOMMENTS).ASM   11-23-2018  2:50:09         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0096   28A1           00274                 GOTO    SALTEO_R
+0097   300F           00275                 MOVLW   0x0F
+0098   00A2           00276                 MOVWF   D3
+0099   03A3           00277                 DECF    D4,1
+009A   0823           00278                 MOVF    D4,W
+009B   3A00           00279                 XORLW   .0
+009C   1D03           00280                 BTFSS   STATUS,Z                
+009D   28A1           00281                 GOTO    SALTEO_R
+009E   03A1           00282                 DECF    D2,1
+009F   300F           00283                 MOVLW   0x0F
+00A0   00A3           00284                 MOVWF   D4
+00A1                  00285 SALTEO_R
+00A1   0008           00286                 RETURN
+                      00287 ;_____________________-----------___________________________________
+                      00288 ;_____________________| DISPLAY |___________________________________
+                      00289 ;_____________________-----------___________________________________
+                      00290 
+                      00291                                 
+                      00292 ;DISPLAY
+                      00293 
+                      00294 ;RB1->SEG A
+                      00295 ;RB2->SEG B 
+                      00296 ;RB3->SEG C
+                      00297 ;RB4->SEG D
+                      00298 ;RB5->SEG E 
+                      00299 ;RB6->SEG F
+                      00300 ;RB7->SEG G
+                      00301 
+00A2                  00302 TAB_DISPLAY
+00A2   0782           00303                 ADDWF   PCL,1
+                      00304                 
+00A3   347E           00305                 retlw           b'01111110'                     ;0
+00A4   340C           00306                 retlw           b'00001100'             ;1
+00A5   34B6           00307                 retlw           b'10110110'                     ;2
+00A6   349E           00308                 retlw           b'10011110'                     ;3
+00A7   34CC           00309                 retlw           b'11001100'                     ;4
+00A8   34DA           00310                 retlw           b'11011010'                     ;5
+00A9   34FA           00311                 retlw           b'11111010'                     ;6
+00AA   340E           00312                 retlw           b'00001110'                     ;7
+00AB   34FE           00313                 retlw           b'11111110'                     ;8
+00AC   34DE           00314                 retlw           b'11011110'                     ;9
+00AD   34EE           00315                 retlw           b'11101110'                     ;A
+00AE   34F8           00316                 retlw           b'11111000'                     ;B
+00AF   3472           00317                 retlw           b'01110010'                     ;C
+00B0   34BC           00318                 retlw           b'10111100'                     ;D
+00B1   34F2           00319                 retlw           b'11110010'                     ;E
+00B2   34E2           00320                 retlw           b'11100010'                     ;F
+                      00321 
+00B3                  00322 TAB_DISPLAY_NEG
+Warning[202]: Argument out of range.  Least significant bits used.
+00B3   0702           00323                 ADDWF   PCL,4
+00B4   3402           00324                 retlw   b'00000010' ;-
+                      00325 
+MPASM  5.31                 1(NOCOMMENTS).ASM   11-23-2018  2:50:09         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Warning[205]: Found directive in column 1. (END)
+                      00326 END
+MPASM  5.31                 1(NOCOMMENTS).ASM   11-23-2018  2:50:09         PAGE  9
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ADEN                              00000003
+APAGAR_DISPLAYS                   CLRF    PORTA
+AUXILIAR9                         00000030
+AUX_D4                            00000029
+AUX_D8                            0000002F
+AUX_NUM1                          00000032
+AUX_NUM2                          00000033
+AUX_REST1                         00000031
+AUX_STATUS                        00000025
+AUX_W                             00000024
+BOTONES                           00000044
+BRGH                              00000002
+BTN_G1                            PORTA,6
+BTN_G2                            PORTA,7
+BTN_M                             PORTB,0
+BTN_R                             PORTA,4
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CAMBIAR                           00000059
+CAMBIAR_A_N2                      0000005C
+CAMBIAR_A_RESULTADO               00000068
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCPR1H                            00000016
+CCPR1L                            00000015
+CIS                               00000003
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000001F
+CMIE                              00000006
+CMIF                              00000006
+CONFI                             0000002C
+CONT_AR                           00000034
+CONT_AR_2                         00000035
+CREN                              00000004
+CSRC                              00000007
+CTRL_DISPLAY                      PORTA
+D1                                00000020
+D1_N1                             00000026
+D1_N2                             0000002B
+D1_N3                             0000002C
+D2                                00000021
+MPASM  5.31                 1(NOCOMMENTS).ASM   11-23-2018  2:50:09         PAGE 10
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+D2_N1                             00000027
+D2_N2                             0000002D
+D3                                00000022
+D3_N1                             00000028
+D3_N2                             0000002A
+D3_N3                             0000002E
+D4                                00000023
+DC                                00000001
+DEMORA_AR                         00000050
+EEADR                             0000009B
+EECON1                            0000009C
+EECON2                            0000009D
+EEDATA                            0000009A
+EEIE                              00000007
+EEIF                              00000007
+F                                 00000001
+FERR                              00000002
+FIN_T0I                           00000026
+FLAG_M                            00000036
+FSR                               00000004
+GIE                               00000007
+INDF                              00000000
+INICIO                            00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+LOOP_AR                           00000052
+LOOP_AR_2                         00000054
+MOSTRAR                           
+MOSTRAR_D2                        00000015
+MOSTRAR_D3                        0000001B
+MOSTRAR_D4                        00000021
+NEGATIVO                          00000081
+NOT_BO                            00000000
+NOT_BOD                           00000000
+NOT_BOR                           00000000
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+OERR                              00000001
+OPTION_REG                        00000081
+OSCF                              00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PIE1                              0000008C
+PIN_D1                            3
+PIN_D2                            2
+MPASM  5.31                 1(NOCOMMENTS).ASM   11-23-2018  2:50:09         PAGE 11
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PIN_D3                            1
+PIN_D4                            0
+PIR1                              0000000C
+PORTA                             00000005
+PORTB                             00000006
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+RBIE                              00000003
+RBIF                              00000000
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RESTAR                            00000092
+RP0                               00000005
+RP1                               00000006
+RX9                               00000006
+RX9D                              00000000
+SALTEO_R                          000000A1
+SALTEO_S                          00000091
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+STATUS                            00000003
+SUMAR                             00000084
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1OSCEN                           00000003
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TAB_DISPLAY                       000000A2
+TAB_DISPLAY_NEG                   000000B3
+TMR0                              00000001
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+MPASM  5.31                 1(NOCOMMENTS).ASM   11-23-2018  2:50:09         PAGE 12
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISB                             00000086
+TRMT                              00000001
+TX9                               00000006
+TX9D                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             0000009F
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_BOREN_OFF                        00003FBF
+_BOREN_ON                         00003FFF
+_CP_OFF                           00003FFF
+_CP_ON                            00001FFF
+_DATA_CP_OFF                      00003FFF
+_DATA_CP_ON                       00003EFF
+_ER_OSC_CLKOUT                    00003FFF
+_ER_OSC_NOCLKOUT                  00003FFE
+_EXTCLK_OSC                       00003FEF
+_HS_OSC                           00003FEE
+_INTOSC_OSC_CLKOUT                00003FFD
+_INTOSC_OSC_NOCLKOUT              00003FFC
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FEC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_RC_OSC_CLKOUT                    00003FFF
+_RC_OSC_NOCLKOUT                  00003FFE
+MPASM  5.31                 1(NOCOMMENTS).ASM   11-23-2018  2:50:09         PAGE 13
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FED
+__16F628A                         00000001
+__DEBUG                           1
+decidoseeprom                     00000002
+deciunoeeprom                     00000000
+unidoseeprom                      00000003
+uniunoeeprom                      00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : X---XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXX-----------
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   178
+Program Memory Words Free:  1870
+
+
+Errors   :     0
+Warnings :     7 reported,     0 suppressed
+Messages :    10 reported,     0 suppressed
+
+

@@ -1,0 +1,662 @@
+MPASM  5.31                    TINKYWINKY.ASM   11-16-2018  4:39:06         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 #INCLUDE<P16F628A.INC>
+                      00001         LIST
+                      00002 ; P16F628A.INC  Standard Header File, Version 1.10    Microchip Technology, Inc.
+                      00265         LIST
+                      00266 
+2007   3F10           00002                 __CONFIG 3F10
+                      00003 
+                      00004 ;DECLARACION DE ESPACIOS DE MEMORIA A USAR              
+                      00005                 CBLOCK  0X20
+  00000020            00006                 D1
+  00000021            00007                 D2
+  00000022            00008                 D3
+  00000023            00009                 D4
+  00000024            00010                 AUX_W
+  00000025            00011                 AUX_STATUS
+  00000026            00012         AUX_D1
+  00000027            00013         AUX_D2
+  00000028            00014         AUX_D3
+  00000029            00015         AUX_D4
+  0000002A            00016                 AUX_D5
+  0000002B            00017                 AUX_D6
+  0000002C            00018         AUX_D7
+  0000002D            00019         AUX_D8
+  0000002E            00020                 AUXILIAR9
+  0000002F            00021                 AUX_REST1
+  00000030            00022         AUX_NUM1
+  00000031            00023         AUX_NUM2
+  00000032            00024                 CONT_AR 
+  00000033            00025                 CONT_AR_2
+                      00026                 ENDC
+                      00027                 
+                      00028 ;DECLARACION DE CONSTATNES
+                      00029 #DEFINE BTN_G1  PORTA,6
+                      00030 #DEFINE BTN_G2  PORTA,7
+                      00031 #DEFINE BTN_R   PORTA,4
+                      00032 #DEFINE BTN_M   PORTB,0
+                      00033 
+                      00034 #DEFINE PIN_D1  3
+                      00035 #DEFINE PIN_D2  2
+                      00036 #DEFINE PIN_D3  1
+                      00037 #DEFINE PIN_D4  0
+                      00038 
+                      00039 #DEFINE CTRL_DISPLAY    PORTA
+                      00040 #DEFINE APAGAR_DISPLAYS CLRF    PORTA
+                      00041 
+                      00042 ;DECLARACION DE MACROS
+                      00043 
+                      00044 MOSTRAR MACRO   DIGITO,PIN
+                      00045                 APAGAR_DISPLAYS
+                      00046                 MOVF    DIGITO,W
+                      00047                 CALL    TAB_DISPLAY
+                      00048                 MOVWF   PORTB
+                      00049                 BSF             CTRL_DISPLAY,PIN
+MPASM  5.31                    TINKYWINKY.ASM   11-16-2018  4:39:06         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00050                 ENDM
+                      00051 ;DECLARACION DE MEMORIA EEPROM
+                      00052 
+  00000000            00053 deciunoeeprom         equ  0x00
+  00000001            00054 uniunoeeprom          equ  0x01
+  00000002            00055 decidoseeprom         equ  0x02
+  00000003            00056 unidoseeprom          equ  0x03
+  00000003            00057 unidoseeprom          equ  0x03                                         
+                      00058 
+                      00059 
+                      00060 
+                      00061 
+                      00062 
+                      00063 ;INICIO DEL PROGRAMA            
+0000                  00064 INICIO          
+0000                  00065                 ORG             0X00
+0000   282C           00066                 GOTO    CONFI
+0004                  00067                 ORG             0X04            
+                      00068 
+                      00069 ;RUTINA DE INTERRUPCION
+                      00070 ;DESBORDA EL TIMER CADA 15ms
+                      00071 ;MUESTRA TODOS LOS DIGITOS DE ACUERDO A LAS VARIABLES D1:4
+                      00072 
+                      00073 ;GUARDA STATUS Y W EN VARIABLES AUXILIARES
+0004   110B           00074                 BCF             INTCON,T0IF
+0005   138B           00075                 BCF             INTCON,GIE              
+0006   00A4           00076                 MOVWF   AUX_W
+0007   3003           00077                 MOVLW   STATUS
+0008   00A5           00078                 MOVWF   AUX_STATUS
+                      00079 
+                      00080 ;MULTIPLEXADO DE DISPLAYS
+0009   1985           00081                 BTFSC   CTRL_DISPLAY,PIN_D1
+000A   2815           00082                 GOTO    MOSTRAR_D2                      
+000B   1905           00083                 BTFSC   CTRL_DISPLAY,PIN_D2
+000C   281B           00084                 GOTO    MOSTRAR_D3
+000D   1885           00085                 BTFSC   CTRL_DISPLAY,PIN_D3
+000E   2821           00086                 GOTO    MOSTRAR_D4
+                      00087                 MOSTRAR D1,PIN_D1
+000F   0185               M                 APAGAR_DISPLAYS
+0010   0820               M                 MOVF    D1,W
+0011   20A5               M                 CALL    TAB_DISPLAY
+0012   0086               M                 MOVWF   PORTB
+0013   1585               M                 BSF             CTRL_DISPLAY,3
+0014   2826           00088                 GOTO    FIN_T0I
+                      00089 
+0015                  00090 MOSTRAR_D2
+                      00091                 MOSTRAR D2,PIN_D2
+0015   0185               M                 APAGAR_DISPLAYS
+0016   0821               M                 MOVF    D2,W
+0017   20A5               M                 CALL    TAB_DISPLAY
+0018   0086               M                 MOVWF   PORTB
+0019   1505               M                 BSF             CTRL_DISPLAY,2
+001A   2826           00092                 GOTO    FIN_T0I
+MPASM  5.31                    TINKYWINKY.ASM   11-16-2018  4:39:06         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00093 
+001B                  00094 MOSTRAR_D3
+                      00095                 MOSTRAR D3,PIN_D3
+001B   0185               M                 APAGAR_DISPLAYS
+001C   0822               M                 MOVF    D3,W
+001D   20A5               M                 CALL    TAB_DISPLAY
+001E   0086               M                 MOVWF   PORTB
+001F   1485               M                 BSF             CTRL_DISPLAY,1
+0020   2826           00096                 GOTO    FIN_T0I
+                      00097 
+0021                  00098 MOSTRAR_D4
+                      00099                 MOSTRAR D4,PIN_D4
+0021   0185               M                 APAGAR_DISPLAYS
+0022   0823               M                 MOVF    D4,W
+0023   20A5               M                 CALL    TAB_DISPLAY
+0024   0086               M                 MOVWF   PORTB
+0025   1405               M                 BSF             CTRL_DISPLAY,0
+                      00100                 
+0026                  00101 FIN_T0I
+                      00102 ;REINICIA TIMER Y RECUPERA STATUS Y W
+0026   30C6           00103                 MOVLW   .198
+0027   0081           00104                 MOVWF   TMR0
+0028   0825           00105                 MOVF    AUX_STATUS,W
+0029   0083           00106                 MOVWF   STATUS
+002A   0824           00107                 MOVF    AUX_W,W
+002B   0009           00108                 RETFIE
+                      00109 
+                      00110 ;CONFIGURACION-------------------------------
+                      00111                 
+002C                  00112 CONFI
+002C   3007           00113                 MOVLW   0X07
+002D   009F           00114                 MOVWF   CMCON           ;CMCON SE TIENE QUE ESTABLECER EN 7 PARA USAR TODO EL PORTA
+002E   30C6           00115                 MOVLW   .198
+002F   0081           00116                 MOVWF   TMR0
+0030   1683           00117                 BSF             STATUS,RP0
+0031   3001           00118                 MOVLW   b'00000001'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0032   0086           00119                 MOVWF   TRISB   
+0033   30F0           00120                 MOVLW   b'11110000'
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0034   0085           00121                 MOVWF   TRISA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0035   1281           00122                 BCF             OPTION_REG,T0CS
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0036   1181           00123                 BCF             OPTION_REG,PSA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0037   1401           00124                 BSF             OPTION_REG,PS0
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0038   1481           00125                 BSF             OPTION_REG,PS1
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0039   1501           00126                 BSF             OPTION_REG,PS2
+003A   178B           00127                 BSF             INTCON,GIE
+003B   168B           00128                 BSF             INTCON,T0IE
+MPASM  5.31                    TINKYWINKY.ASM   11-16-2018  4:39:06         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+003C   1283           00129                 BCF             STATUS,RP0
+                      00130 
+                      00131 ;RUTINA PRINCIPAL
+                      00132 ;INCREMENTA DE 0 A (F) CADA DIGITO DEPENDIENDO QUE BOTON SE TOCA. 
+                      00133 
+003D   0185           00134                 CLRF    PORTA
+003E   0186           00135                 CLRF    PORTB
+003F   01A0           00136                 CLRF    D1
+0040   01A1           00137                 CLRF    D2
+0041   01A2           00138                 CLRF    D3      
+0042   01A3           00139                 CLRF    D4
+                      00140 
+0043                  00141 BOTONES
+                      00142 
+0043   1B05           00143                 BTFSC   BTN_G1
+0044   2054           00144                 CALL    DEMORA_AR
+0045   1B05           00145                 BTFSC   BTN_G1
+0046   2087           00146                 CALL    SUMAR
+                      00147 
+0047   1B85           00148                 BTFSC   BTN_G2
+0048   2054           00149                 CALL    DEMORA_AR
+0049   1B85           00150                 BTFSC   BTN_G2
+004A   2095           00151                 CALL    RESTAR
+                      00152         
+004B   1A05           00153                 BTFSC   BTN_R
+004C   2054           00154                 CALL    DEMORA_AR
+004D   1A05           00155                 BTFSC   BTN_R
+004E   2000           00156                 CALL    INICIO
+                      00157 
+004F   1806           00158                 BTFSC BTN_M
+0050   2054           00159                 CALL DEMORA_AR
+0051   1806           00160                 BTFSC BTN_M
+0052   205D           00161                 CALL CAMBIAR
+                      00162 
+0053   2843           00163                 GOTO    BOTONES
+                      00164 
+                      00165 ;Demora
+0054                  00166 DEMORA_AR
+0054   30FF           00167                 MOVLW   .255
+0055   00B2           00168                 MOVWF   CONT_AR
+0056                  00169 LOOP_AR
+0056   30FF           00170                 MOVLW   .255
+0057   00B3           00171                 MOVWF   CONT_AR_2
+0058                  00172 LOOP_AR_2
+0058   0BB3           00173                 DECFSZ  CONT_AR_2,1
+0059   2858           00174                 GOTO    LOOP_AR_2
+005A   0BB2           00175                 DECFSZ  CONT_AR,1
+005B   2856           00176                 GOTO    LOOP_AR
+005C   0008           00177                 RETURN
+                      00178 
+                      00179         ;_______________________________________________________________________________________________
+                            ____
+005D                  00180 CAMBIAR
+MPASM  5.31                    TINKYWINKY.ASM   11-16-2018  4:39:06         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Message[305]: Using default destination of 1 (file).
+005D   08A0           00181                 MOVF D1
+005E   00A6           00182                 MOVWF AUX_D1
+Message[305]: Using default destination of 1 (file).
+005F   08A1           00183                 MOVF D2
+0060   00A7           00184                 MOVWF AUX_D2
+Message[305]: Using default destination of 1 (file).
+0061   08A2           00185                 MOVF  D3
+0062   00A8           00186                 MOVWF AUX_D3
+Message[305]: Using default destination of 1 (file).
+0063   08A3           00187                 MOVF  D4
+0064   00A9           00188                 MOVWF AUX_D4
+                      00189                 
+                      00190 
+0065   01A0           00191                 CLRF D1
+0066   01A1           00192                 CLRF D2 
+0067   01A2           00193                 CLRF D3
+0068   01A3           00194                 CLRF D4
+                      00195 
+0069   1B05           00196                 BTFSC   BTN_G1
+006A   2054           00197                 CALL    DEMORA_AR
+006B   1B05           00198                 BTFSC   BTN_G1
+006C   2087           00199                 CALL    SUMAR
+                      00200 
+006D   1B85           00201                 BTFSC   BTN_G2
+006E   2054           00202                 CALL    DEMORA_AR
+006F   1B85           00203                 BTFSC   BTN_G2
+0070   2095           00204                 CALL    RESTAR
+                      00205                 
+                      00206 
+0071   1806           00207                 BTFSC BTN_M
+0072   2054           00208                 CALL DEMORA_AR
+0073   1806           00209                 BTFSC BTN_M
+0074   2076           00210                 CALL RESTA_GEN
+                      00211 
+                      00212                 
+0075   0008           00213                 RETURN
+                      00214 ;____________________________________________
+                      00215 
+0076                  00216 RESTA_GEN
+                      00217                 
+Warning[202]: Argument out of range.  Least significant bits used.
+0076   0226           00218                 SUBWF AUX_D1,D1 ;Resta aux_d1 con d1 
+0077   1C03           00219                 BTFSS STATUS,C  ;Si la resta da negativa saltea
+0078   00A6           00220                 MOVWF AUX_D1    ;Mueve el resultado a Aux_d1
+0079   2084           00221                 CALL NEGATIVO   ;Llama a la rutina negativo 
+Warning[202]: Argument out of range.  Least significant bits used.
+007A   02A7           00222                 SUBWF AUX_D2,D2 ;Resta aux_d2 con d2
+007B   1C03           00223                 BTFSS STATUS,C  ;Si la resta da negativa saltea
+007C   2084           00224                 CALL NEGATIVO   ;Llama a la rutina negativa
+Warning[202]: Argument out of range.  Least significant bits used.
+007D   0228           00225                 SUBWF AUX_D3,D3 ;Resta aux_d3 con d3
+007E   1C03           00226                 BTFSS STATUS,C  ;Si la resta da negativa saltea
+MPASM  5.31                    TINKYWINKY.ASM   11-16-2018  4:39:06         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+007F   2084           00227                 CALL NEGATIVO   ;Llama a la rutina negativo
+Warning[202]: Argument out of range.  Least significant bits used.
+0080   02A9           00228                 SUBWF AUX_D4,D4 ;Resta aux_d4 con d4
+0081   1C03           00229                 BTFSS STATUS,C  ;Si la resta da negativa saltea
+0082   2884           00230                 GOTO NEGATIVO   ;Va a negativo
+                      00231                 
+0083   0008           00232                 RETURN
+                      00233 
+0084                  00234 NEGATIVO
+0084   00A3           00235                 MOVWF D4
+0085   28B6           00236                 GOTO TAB_DISPLAY_NEG
+0086   0008           00237                 RETURN
+0087                  00238 SUMAR                                                   
+0087   0AA2           00239                 INCF    D3,1            ;Incrementa el D3 en 1
+0088   0822           00240                 MOVF    D3,W            ;Copia el valor de D3 a W
+0089   3A10           00241                 XORLW   .16                             ;XOR con 16. inncrementa hasta 16
+008A   1D03           00242                 BTFSS   STATUS,Z                ;Si llega a 16, salta
+008B   2894           00243                 GOTO    SALTEO_S                ;RUTINA
+008C   0AA3           00244                 INCF    D4,1                    ; Incrementa D4 a 1
+008D   0823           00245                 MOVF    D4,W                    ;Copia D4 en w
+008E   01A2           00246                 CLRF    D3                              ;Borra D3
+008F   3A10           00247                 XORLW   .16                             ;XOR con 16
+0090   1D03           00248                 BTFSS   STATUS,Z                ;Si llega a 16, D4, salta la bandera(Status,Z) en 1 (Com
+                            para 16 de D3 con el xor)
+0091   2894           00249                 GOTO    SALTEO_S                ;Rutina
+0092   0AA1           00250                 INCF    D2,1                    ;Incrementa D2 a 1
+0093   01A3           00251                 CLRF    D4                              ;borra D4
+0094                  00252 SALTEO_S
+0094   0008           00253                 RETURN
+                      00254 
+0095                  00255 RESTAR                                                  
+0095   03A2           00256                 DECF    D3,1
+0096   0822           00257                 MOVF    D3,W
+0097   3A00           00258                 XORLW   .0      
+0098   1D03           00259                 BTFSS   STATUS,Z                
+0099   28A4           00260                 GOTO    SALTEO_R
+009A   300F           00261                 MOVLW   0x0F
+009B   00A2           00262                 MOVWF   D3
+009C   03A3           00263                 DECF    D4,1
+009D   0823           00264                 MOVF    D4,W
+009E   3A00           00265                 XORLW   .0
+009F   1D03           00266                 BTFSS   STATUS,Z                
+00A0   28A4           00267                 GOTO    SALTEO_R
+00A1   03A1           00268                 DECF    D2,1
+00A2   300F           00269                 MOVLW   0x0F
+00A3   00A3           00270                 MOVWF   D4
+00A4                  00271 SALTEO_R
+00A4   0008           00272                 RETURN
+                      00273 ;_____________________________
+                      00274 
+                      00275                                 
+                      00276 ;DISPLAY
+                      00277 
+MPASM  5.31                    TINKYWINKY.ASM   11-16-2018  4:39:06         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00278 ;RB1->SEG A
+                      00279 ;RB2->SEG B 
+                      00280 ;RB3->SEG C
+                      00281 ;RB4->SEG D
+                      00282 ;RB5->SEG E 
+                      00283 ;RB6->SEG F
+                      00284 ;RB7->SEG G
+                      00285 
+00A5                  00286 TAB_DISPLAY
+00A5   0782           00287                 ADDWF   PCL,1
+                      00288                 
+00A6   347E           00289                 retlw           b'01111110'                     ;0
+00A7   340C           00290                 retlw           b'00001100'             ;1
+00A8   34B6           00291                 retlw           b'10110110'                     ;2
+00A9   349E           00292                 retlw           b'10011110'                     ;3
+00AA   34CC           00293                 retlw           b'11001100'                     ;4
+00AB   34DA           00294                 retlw           b'11011010'                     ;5
+00AC   34FA           00295                 retlw           b'11111010'                     ;6
+00AD   340E           00296                 retlw           b'00001110'                     ;7
+00AE   34FE           00297                 retlw           b'11111110'                     ;8
+00AF   34DE           00298                 retlw           b'11011110'                     ;9
+00B0   34EE           00299                 retlw           b'11101110'                     ;A
+00B1   34F8           00300                 retlw           b'11111000'                     ;B
+00B2   3472           00301                 retlw           b'01110010'                     ;C
+00B3   34BC           00302                 retlw           b'10111100'                     ;D
+00B4   34F2           00303                 retlw           b'11110010'                     ;E
+00B5   34E2           00304                 retlw           b'11100010'                     ;F
+                      00305 
+00B6                  00306 TAB_DISPLAY_NEG
+Warning[202]: Argument out of range.  Least significant bits used.
+00B6   0702           00307                 ADDWF   PCL,4
+00B7   3402           00308                 retlw   b'00000010' ;-
+                      00309 
+Warning[205]: Found directive in column 1. (END)
+                      00310 END
+MPASM  5.31                    TINKYWINKY.ASM   11-16-2018  4:39:06         PAGE  8
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ADEN                              00000003
+APAGAR_DISPLAYS                   CLRF    PORTA
+AUXILIAR9                         0000002E
+AUX_D1                            00000026
+AUX_D2                            00000027
+AUX_D3                            00000028
+AUX_D4                            00000029
+AUX_D5                            0000002A
+AUX_D6                            0000002B
+AUX_D7                            0000002C
+AUX_D8                            0000002D
+AUX_NUM1                          00000030
+AUX_NUM2                          00000031
+AUX_REST1                         0000002F
+AUX_STATUS                        00000025
+AUX_W                             00000024
+BOTONES                           00000043
+BRGH                              00000002
+BTN_G1                            PORTA,6
+BTN_G2                            PORTA,7
+BTN_M                             PORTB,0
+BTN_R                             PORTA,4
+C                                 00000000
+C1INV                             00000004
+C1OUT                             00000006
+C2INV                             00000005
+C2OUT                             00000007
+CAMBIAR                           0000005D
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCPR1H                            00000016
+CCPR1L                            00000015
+CIS                               00000003
+CM0                               00000000
+CM1                               00000001
+CM2                               00000002
+CMCON                             0000001F
+CMIE                              00000006
+CMIF                              00000006
+CONFI                             0000002C
+CONT_AR                           00000032
+CONT_AR_2                         00000033
+CREN                              00000004
+CSRC                              00000007
+CTRL_DISPLAY                      PORTA
+D1                                00000020
+MPASM  5.31                    TINKYWINKY.ASM   11-16-2018  4:39:06         PAGE  9
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+D2                                00000021
+D3                                00000022
+D4                                00000023
+DC                                00000001
+DEMORA_AR                         00000054
+EEADR                             0000009B
+EECON1                            0000009C
+EECON2                            0000009D
+EEDATA                            0000009A
+EEIE                              00000007
+EEIF                              00000007
+F                                 00000001
+FERR                              00000002
+FIN_T0I                           00000026
+FSR                               00000004
+GIE                               00000007
+INDF                              00000000
+INICIO                            00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+LOOP_AR                           00000056
+LOOP_AR_2                         00000058
+MOSTRAR                           
+MOSTRAR_D2                        00000015
+MOSTRAR_D3                        0000001B
+MOSTRAR_D4                        00000021
+NEGATIVO                          00000084
+NOT_BO                            00000000
+NOT_BOD                           00000000
+NOT_BOR                           00000000
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+OERR                              00000001
+OPTION_REG                        00000081
+OSCF                              00000003
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PEIE                              00000006
+PIE1                              0000008C
+PIN_D1                            3
+PIN_D2                            2
+PIN_D3                            1
+PIN_D4                            0
+PIR1                              0000000C
+PORTA                             00000005
+PORTB                             00000006
+MPASM  5.31                    TINKYWINKY.ASM   11-16-2018  4:39:06         PAGE 10
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PR2                               00000092
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+RBIE                              00000003
+RBIF                              00000000
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RESTAR                            00000095
+RESTA_GEN                         00000076
+RP0                               00000005
+RP1                               00000006
+RX9                               00000006
+RX9D                              00000000
+SALTEO_R                          000000A4
+SALTEO_S                          00000094
+SPBRG                             00000099
+SPEN                              00000007
+SREN                              00000005
+STATUS                            00000003
+SUMAR                             00000087
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1OSCEN                           00000003
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TAB_DISPLAY                       000000A5
+TAB_DISPLAY_NEG                   000000B6
+TMR0                              00000001
+TMR1CS                            00000001
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+MPASM  5.31                    TINKYWINKY.ASM   11-16-2018  4:39:06         PAGE 11
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISB                             00000086
+TRMT                              00000001
+TX9                               00000006
+TX9D                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             0000009F
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_BODEN_OFF                        00003FBF
+_BODEN_ON                         00003FFF
+_BOREN_OFF                        00003FBF
+_BOREN_ON                         00003FFF
+_CP_OFF                           00003FFF
+_CP_ON                            00001FFF
+_DATA_CP_OFF                      00003FFF
+_DATA_CP_ON                       00003EFF
+_ER_OSC_CLKOUT                    00003FFF
+_ER_OSC_NOCLKOUT                  00003FFE
+_EXTCLK_OSC                       00003FEF
+_HS_OSC                           00003FEE
+_INTOSC_OSC_CLKOUT                00003FFD
+_INTOSC_OSC_NOCLKOUT              00003FFC
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FEC
+_LVP_OFF                          00003F7F
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_RC_OSC_CLKOUT                    00003FFF
+_RC_OSC_NOCLKOUT                  00003FFE
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FED
+__16F628A                         00000001
+MPASM  5.31                    TINKYWINKY.ASM   11-16-2018  4:39:06         PAGE 12
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+__DEBUG                           1
+decidoseeprom                     00000002
+deciunoeeprom                     00000000
+unidoseeprom                      00000003
+uniunoeeprom                      00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : X---XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXX--------
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   181
+Program Memory Words Free:  1867
+
+
+Errors   :     0
+Warnings :     6 reported,     0 suppressed
+Messages :    11 reported,     0 suppressed
+
+

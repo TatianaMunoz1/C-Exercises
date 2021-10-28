@@ -1,0 +1,17 @@
+Message[302] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 123 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 125 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 126 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 127 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 128 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 129 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 130 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Warning[207] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 193 : Found label after column 1. (CAMBIAR_A_N2)
+Message[305] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 195 : Using default destination of 1 (file).
+Message[305] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 197 : Using default destination of 1 (file).
+Message[305] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 199 : Using default destination of 1 (file).
+Warning[207] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 208 : Found label after column 1. (CAMBIAR_A_RESULTADO)
+Warning[202] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 227 : Argument out of range.  Least significant bits used.
+Warning[202] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 231 : Argument out of range.  Least significant bits used.
+Warning[202] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 235 : Argument out of range.  Least significant bits used.
+Warning[202] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 323 : Argument out of range.  Least significant bits used.
+Warning[205] F:\TP DE ARQUITECTURA\1\1(NOCOMMENTS).ASM 326 : Found directive in column 1. (END)
